@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ERG Admin</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="t"><div class="h1">ERG Admin Board</div><div class="h2">Discord login required</div></div>
+    <button class="badge" style="margin-left:auto" id="btn-login">Sign in</button>
+    <button class="badge" id="btn-logout">Log out</button>
+    <a class="badge" href="index.html">App</a>
+  </header>
+  <div class="container">
+    <div id="need-login" class="card hidden">
+      <h2>Sign in required</h2>
+      <p class="muted">Sign in with Discord to continue.</p>
+    </div>
+    <div id="board" class="hidden">
+      <div class="card">
+        <h2>Recent Submissions (best effort)</h2>
+        <p class="muted">This list resets when the server restarts. The source of truth is your Discord channel via the webhook.</p>
+        <table class="table" id="tbl-subs">
+          <thead><tr><th>When</th><th>Type</th><th>User</th><th>Payload</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="admin.js"></script>
+</body>
+</html>

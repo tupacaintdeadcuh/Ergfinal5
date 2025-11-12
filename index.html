@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ERG Tracking</title>
+  <meta name="theme-color" content="#0b0f14">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <header>
+    <img src="erg-logo.jpg" alt="ERG Logo" onerror="this.style.display='none'">
+    <div class="t">
+      <div class="h1">Expeditionary Raider Group</div>
+      <div class="h2"><strong>Swift · Silent · True</strong></div>
+    </div>
+    <span class="badge" id="me-tag" style="margin-left:auto">Not signed in</span>
+    <button class="badge" id="btn-login" style="margin-left:8px" onclick="loginDiscord()">Sign in</button>
+    <button class="badge hidden" id="btn-logout" style="margin-left:8px" onclick="logout()">Log out</button>
+    <a class="badge" style="margin-left:8px" href="admin.html">Admin</a>
+  </header>
+
+  <div class="container">
+    <section id="view-home">
+      <div class="kpis">
+        <div class="card"><h3 id="kpi-days">0</h3><p>Days Active</p></div>
+        <div class="card"><h3 id="kpi-rank">E-1 Recruit</h3><p>Rank (derived)</p></div>
+        <div class="card"><h3>ERG</h3><p>“Swift · Silent · True”</p></div>
+      </div>
+
+      <div class="card">
+        <h2>Welcome</h2>
+        <p>As a Green Team recruit, you are entering a structured environment built on discipline, accountability, and respect. The Expeditionary Raider Group operates under a defined chain of command — and it exists for a reason.</p>
+        <p>Your Commanding Officers and leadership are here to guide you, support your development, and maintain the standard expected of Raiders. You are required to utilize your chain of command at all times.</p>
+        <p>If you have questions, concerns, need clarification, or require guidance, you will bring it to the leaders above you. This is not only how real units function — it is how you learn to lead and operate with professionalism.</p>
+        <p>Trust your leadership. Communicate clearly. Use your chain of command — that is what they are there for.</p>
+        <p style="margin-top:10px;"><em>“As iron sharpens iron, so one man sharpens another.”</em></p>
+      </div>
+
+      <div class="card">
+        <h2>Weekly Check‑Ins — Disciplinary Policy</h2>
+        <ul>
+          <li><strong>1 missed check‑in</strong>: Verbal counseling by your Squad Lead or your direct IC.</li>
+          <li><strong>2 missed in a row</strong>: You are bumped to <strong>Green Team</strong>.</li>
+          <li><strong>Green Team</strong> members who miss <strong>two check‑ins</strong>: <strong>Removed</strong> from the program.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Quick Actions</h2>
+        <div class="row">
+          <button onclick="goto('apply')">Application</button>
+          <button onclick="goto('checkin')">Weekly Check‑In</button>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <button onclick="goto('training')">Training Tracker</button>
+          <button onclick="goto('ranks')">Rank Reference</button>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <button onclick="goto('promote')">Promotion Request</button>
+          <button onclick="goto('profile')">Edit Profile</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-profile" class="hidden">
+      <div class="card"><h2>Profile</h2>
+        <label>Full Name</label><input id="p-name" placeholder="First Last">
+        <label>Callsign</label><input id="p-callsign" placeholder="COBRA / DELTA / RAPTOR / VOODOO">
+        <div class="row">
+          <div><label>Platform</label><select id="p-platform"><option>Xbox</option><option>PC</option><option>PlayStation</option></select></div>
+          <div><label>Timezone</label><input id="p-timezone" placeholder="America/Chicago"></div>
+        </div>
+        <label>Discord ID (auto if signed in)</label><input id="p-discord" placeholder="123456789012345678">
+        <label>Enlist Date</label><input id="p-enlist" type="date">
+        <div class="row" style="margin-top:8px">
+          <button onclick="saveProfile()">Save</button>
+          <button onclick="setDaysOverride()">Set Days Override</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-apply" class="hidden">
+      <div class="card"><h2>Application</h2>
+        <label>Availability</label><input id="app-avail">
+        <label>Experience</label><textarea id="app-exp"></textarea>
+        <label>Preferred Fireteam</label><input id="app-ft">
+        <label>Notes</label><textarea id="app-notes"></textarea>
+        <div class="row" style="margin-top:8px">
+          <button onclick="saveApplication()">Save</button>
+          <button onclick="exportJSON('application')">Export JSON</button>
+          <button onclick="sendAppServer()">Submit</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-checkin" class="hidden">
+      <div class="card"><h2>Weekly Check‑In</h2>
+        <label>Week of</label><input id="ci-week" type="date">
+        <label>Activities Completed</label><textarea id="ci-acts"></textarea>
+        <label>Issues / Requests</label><textarea id="ci-issues"></textarea>
+        <div class="row" style="margin-top:8px">
+          <button onclick="saveCheckIn()">Save</button>
+          <button onclick="exportJSON('checkins')">Export JSON</button>
+          <button onclick="sendLastCheckInServer()">Submit</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>History</h2>
+        <table class="table" id="ci-table"><thead><tr><th>Date</th><th>Summary</th></tr></thead><tbody></tbody></table>
+      </div>
+    </section>
+
+    <section id="view-training" class="hidden">
+      <div class="card"><h2>Training Tracker</h2>
+        <div>
+          <label class="pill"><input id="t-lead" type="checkbox"> Leadership</label>
+          <label class="pill"><input id="t-med" type="checkbox"> Basic Medical</label>
+          <label class="pill"><input id="t-nav" type="checkbox"> Basic Land Nav</label>
+          <label class="pill"><input id="t-recruit" type="checkbox"> Recruitment Course</label>
+          <label class="pill"><input id="t-nine" type="checkbox"> NINE‑LINE MEDEVAC</label>
+        </div>
+        <label>Training Notes</label>
+        <textarea id="t-notes"></textarea>
+        <div class="row" style="margin-top:8px">
+          <button onclick="saveTraining()">Save Training</button>
+          <button onclick="exportJSON('training')">Export JSON</button>
+          <button onclick="sendTrainingServer()">Submit</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-ranks" class="hidden">
+      <div class="card"><h2>Rank Reference & Progress</h2>
+        <table class="table">
+          <thead><tr><th>Rank</th><th>Days (cumulative)</th><th>Requirements</th></tr></thead>
+          <tbody id="rank-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="view-promote" class="hidden">
+      <div class="card"><h2>Promotion Request</h2>
+        <label>Desired Rank</label>
+        <select id="pr-rank">
+          <option value="E-2">E-2</option><option value="E-3">E-3</option><option value="E-4">E-4</option>
+          <option value="E-5">E-5</option><option value="E-6">E-6</option><option value="E-7">E-7</option>
+          <option value="E-8">E-8</option><option value="E-9">E-9</option><option value="WO1">WO1</option>
+        </select>
+        <label>Statement</label><textarea id="pr-statement"></textarea>
+        <div class="row" style="margin-top:8px">
+          <button onclick="exportPromotion()">Export JSON</button>
+          <button onclick="sendPromotionServer()">Submit</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <nav>
+    <div class="tabs">
+      <button onclick="goto('home')">Home</button>
+      <button onclick="goto('apply')">Apply</button>
+      <button onclick="goto('checkin')">Check‑In</button>
+      <button onclick="goto('training')">Training</button>
+      <button onclick="goto('ranks')">Ranks</button>
+      <button onclick="goto('profile')">Profile</button>
+    </div>
+  </nav>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
